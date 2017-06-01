@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en-US">
+
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+	<title>IoT Neluz</title>
+	<meta name="description" content="Dashboard IoT de Neluz" />
+	<meta name="Author" content="Nelo Pauselli" />
+
+	<!-- mobile settings -->
+	<meta name="viewport" content="width=device-width, maximum-scale=1, initial-scale=1, user-scalable=0" />
+
+	<!-- WEB FONTS -->
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700,800&amp;subset=latin,latin-ext,cyrillic,cyrillic-ext"
+	 rel="stylesheet" type="text/css" />
+
+	<!-- CORE CSS -->
+	<link href="assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+
+	<!-- THEME CSS -->
+	<link href="assets/css/essentials.css" rel="stylesheet" type="text/css" />
+	<link href="assets/css/layout.css" rel="stylesheet" type="text/css" />
+	<link href="assets/css/color_scheme/green.css" rel="stylesheet" type="text/css" id="color_scheme" />
+
+</head>
+<!--
+		.boxed = boxed version
+	-->
+
+<body>
+
+
+	<!-- WRAPPER -->
+	<div id="wrapper" class="clearfix">
+
+		<!-- 
+			ASIDE 
+			Keep it outside of #wrapper (responsive purpose)
+		-->
+		<aside id="aside">
+		</aside>
+		<!-- /ASIDE -->
+
+
+		<!-- HEADER -->
+		<header id="header">
+		</header>
+		<!-- /HEADER -->
+
+
+		<!-- 
+				MIDDLE 
+			-->
+		<section id="middle">
+			<header id="page-header">
+				<div class="pull-right">
+					<button type="button" class="btn btn-success" data-toggle="modal" data-target="#add">
+						<i class="fa fa-plus"></i>
+						Add
+					</button>
+				</div>
+				<h1>Wire up</h1>
+				<ol class="breadcrumb">
+					<li><a href="/devices.html">Devices</a></li>
+					<li class="active">Wire up</li>
+				</ol>
+
+			</header>
+
+			<div id="workspace" class="padding-20">
+				<div data-bind="foreach: devices">
+					<div class="col-md-6 panel panel-default">
+						<div class="panel-heading">
+							<span class="elipsis"><!-- panel title -->
+										<i class="fa fa-cube" data-bind="css: stateAsCss"></i>
+										<strong data-bind="text: name"></strong>
+									</span>
+
+							<!-- right options -->
+							<ul class="options pull-right list-inline">
+								<li class=""><a href="#" class="opt panel_colapse" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Colapse"></a></li>
+								<li><a href="#" class="opt panel_fullscreen hidden-xs" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Fullscreen"><i class="fa fa-expand"></i></a></li>
+								<li class=""><a href="#" class="opt panel_close" data-confirm-title="Confirm" data-confirm-message="Are you sure you want to remove this panel?"
+									 data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Close"><i class="fa fa-times"></i></a></li>
+							</ul>
+							<!-- /right options -->
+						</div>
+
+						<div class="panel-body" style="display: block;">
+							<div class="col-md-6">
+								<label>MAC:</label>
+								<span class="text-muted" data-bind="text: mac"></span>
+							</div>
+							<div class="col-md-6">
+								<label>IP:</label>
+								<span class="text-muted" data-bind="text: ip"></span>
+							</div>
+							<div class="col-md-12">
+								<div class="form-group">
+									<label>Eventos:</label>
+									<ul class="list-group" data-bind="foreach: events">
+										<li class="list-group-item">
+											<span class="badge" data-bind="text: subscriptions().length">14</span>
+											<i class="fa fa-bolt"></i>
+											<span data-bind="text: name"></span>
+											<ul class="list-group" data-bind="">
+												<!-- ko foreach: subscriptions -->
+												<li class="list-group-item">
+													<i class="fa fa-eye"></i>
+													<span data-bind="text: url"></span>
+													<span class="fa fa-remove" data-bind="click: $root.unsubscribe"></span>
+												</li>
+												<!-- /ko -->
+												<li class="list-group-item">
+													<form data-bind="submit: $root.subscribe">
+														<input type="hidden" name="ip" data-bind="value: $parent.ip" />
+														<input type="hidden" name="event" data-bind="value: name" />
+														<div class="input-group input-group-sm">
+															<input type="url" name="url" class="form-control" placeholder="add url">
+															<span class="input-group-btn">
+																	<button class="btn btn-default" type="submit">
+																		<i class="fa fa-eye"></i>
+																	</button>
+																</span>
+														</div>
+													</form>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+
+				<div id="add" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addLabel" aria-hidden="true">
+					<div class="modal-dialog modal-sm">
+						<div class="modal-content">
+
+							<!-- header modal -->
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+								<h4 class="modal-title" id="addLabel">
+									<i class="fa fa-cube"></i> Register new device
+								</h4>
+							</div>
+
+							<!-- body modal -->
+							<div class="modal-body">
+								<form data-bind="submit: $root.add">
+									<div class="input-group input-group-sm">
+										<input type="ip" name="ip" class="form-control" placeholder="enter device IP">
+										<span class="input-group-btn">
+											<button class="btn btn-default" type="submit">
+												Add
+											</button>
+										</span>
+									</div>
+								</form>
+
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<!-- /MIDDLE -->
+
+	</div>
+
+	<!-- JAVASCRIPT FILES -->
+	<script type="text/javascript">
+		var plugin_path = 'assets/plugins/';
+	</script>
+	<script type="text/javascript" src="assets/plugins/jquery/jquery-2.2.3.min.js"></script>
+	<script type="text/javascript" src="assets/js/app.js"></script>
+	<script type="text/javascript" src="js/knockout-3.4.2.js"></script>
+	<script type="text/javascript" src="js/knockout.mapping-latest.js"></script>
+	<script type="text/javascript" src="js/layout.js"></script>
+
+	<!-- PAGE LEVEL SCRIPT -->
+	<script type="text/javascript">
+		jQuery.each(["put", "delete"], function (i, method) {
+			jQuery[method] = function (url, data, callback, type) {
+				if (jQuery.isFunction(data)) {
+					type = type || callback;
+					callback = data;
+					data = undefined;
+				}
+
+				return jQuery.ajax({
+					url: url,
+					type: method,
+					dataType: type,
+					data: data,
+					success: callback
+				});
+			};
+		});
+
+		function Device(ip, source) {
+			var device = {
+				ip: ip, name: source.name, mac: source.mac, state: ko.observable('unknown'),
+				events: ko.observableArray()
+			};
+			device.stateAsCss = ko.computed(function () {
+				if (this.state() == 'unknown')
+					return 'text-warning';
+				if (this.state() == 'ready')
+					return 'text-success';
+				return 'text-danger';
+			}, device);
+
+			source.events.forEach(function (event) {
+				device.events.push({ ip: ip, name: event, subscriptions: ko.observableArray() });
+			});
+			source.subscriptions.forEach(function (subscription) {
+				var eventName = subscription.substring(0, subscription.indexOf(':'));
+				var target = subscription.substring(subscription.indexOf(':') + 1);
+				var event = device.events().find(e => e.name === eventName);
+				if (event) {
+					event.subscriptions.push({ ip: ip, eventName: eventName, url: target });
+				}
+			});
+			return device;
+		}
+
+		function checkDeviceState() {
+			model.devices().forEach(function (device) {
+				$.ajax({
+					url: 'http://' + device.ip + '/ping',
+					success: function (response) {
+						if (response == 'pong')
+							device.state('ready');
+						else
+							device.state('notfound');
+					},
+					error: function () {
+						device.state('notfound');
+					},
+					timeout: 500
+				});
+			});
+		}
+
+		var model = {
+			devices: ko.observableArray(),
+			subscribe: function (form) {
+				var $form = $(form);
+				var ip = $("input[name='ip']", form).val();
+				var eventName = $("input[name='event']", form).val();
+				var target = $("input[name='url']", form).val();
+
+				var data = "event=" + eventName + "&target=" + target;
+				var url = "http://" + ip + "/hooks" + "?" + data;
+				$.post(url, "", function () {
+					var device = model.devices().filter(function (d) {
+						return d.ip == ip;
+					})[0];
+
+					var event = device.events().filter(function (e) {
+						return e.name == eventName;
+					})[0];
+
+					event.subscriptions.push({ url: target });
+					$("input[name='url']", form).val("")
+				});
+			},
+			unsubscribe: function (element) {
+				var data = "event=" + element.eventName + "&target=" + element.url;
+				var url = "http://" + element.ip + "/hooks" + "?" + data;
+				$.delete(url, function (result) {
+					location.reload();
+				});
+			},
+			add: function (form) {
+				var $form = $(form);
+				var ip = $("input[name='ip']", form).val();
+
+				var url = "Http://" + ip + "/hooks";
+				$.getJSON(url, function (response) {
+					var device = new Device(ip, response);
+					model.devices.push(device);
+					$("input[name='ip']", form).val("");
+					$("#add").modal("hide");
+
+					var ips = model.devices().map(function (device) {
+						return device.ip
+					});
+					localStorage.setItem("devices", JSON.stringify(ips));
+				});
+			}
+		};
+
+		var stored = localStorage.getItem("devices");
+		if (stored) {
+			var ips = JSON.parse(stored);
+			if (ips) {
+				ips.forEach(function (ip) {
+					var url = "http://" + ip + "/hooks";
+					$.getJSON(url, function (response) {
+						var device = new Device(ip, response);
+						model.devices.push(device);
+					});
+				});
+			}
+		}
+
+		setInterval(checkDeviceState, 5000);
+		ko.applyBindings(model, document.getElementById("workspace"));
+	</script>
+</body>
+
+</html>
