@@ -18,8 +18,8 @@ app.get('/', function (req, res) {
 	res.send("Hello, I'm an IoT hub");
 });
 
-app.get('/list', function (req, res) {
-	storage.listEvents(function (err, events) {
+app.get('/list/:event', function (req, res) {
+	storage.listEvents(req.params.event, function (err, events) {
 		if (!err)
 			res.json(events);
 		else
@@ -30,12 +30,6 @@ app.get('/list', function (req, res) {
 app.get('/count/:event', function (req, res) {
 	console.log(req.params.event);
 	storage.countEvents(req.params.event, function (err, events) {
-		res.json(events);
-	});
-});
-
-app.get('/temperature', function (req, res) {
-	storage.listEventsWithTemperature(function (err, events) {
 		res.json(events);
 	});
 });

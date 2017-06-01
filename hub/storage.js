@@ -8,32 +8,18 @@ var url = 'mongodb://' + mongo_ip + ':' + mongo_port + '/iot';
 console.log(url);
 
 module.exports = {
-	listEvents: function (callback) {
+	listEvents: function (eventName, callback) {
 		MongoClient.connect(url, function (err, db) {
 			assert.equal(null, err);
 			console.log("Connected correctly to server.");
 
 			var docs = [];
-			var cursor = db.collection('events').find();
-			cursor.each(function (err, doc) {
-				assert.equal(err, null);
-				if (doc != null) {
-					docs.push(doc);
-				} else {
-					db.close();
-					callback(null, docs);
-				}
-			});
-		});
-	},
+			var query = {};
 
-	listEventsWithTemperature: function (callback) {
-		MongoClient.connect(url, function (err, db) {
-			assert.equal(null, err);
-			console.log("Connected correctly to server.");
+			var criteria = {};
+			criteria[eventName] = { $exists: true };
 
-			var docs = [];
-			var cursor = db.collection('events').find({ "temperature": { $exists: true } });
+			var cursor = db.collection('events').find(criteria);
 			cursor.each(function (err, doc) {
 				assert.equal(err, null);
 				if (doc != null) {
