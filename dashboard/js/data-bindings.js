@@ -1,5 +1,4 @@
 var baseUrl = "http://192.168.1.116:8081";
-//var baseUrl = "http://localhost:3000";
 
 +(function ($) {
     
