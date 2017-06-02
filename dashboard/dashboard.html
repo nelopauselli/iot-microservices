@@ -11,14 +11,18 @@
 	<!-- COMMONS -->
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
 
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+	 crossorigin="anonymous">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+	 crossorigin="anonymous">
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+	 crossorigin="anonymous">
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+	 crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment-with-locales.min.js"></script>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
@@ -36,6 +40,7 @@
 	<script src="js/data-bindings.js" type="text/javascript"></script>
 
 </head>
+
 <body>
 	<nav class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container-fluid">
@@ -284,30 +289,33 @@
 		</div>
 	</div>
 
-	<script type="text/javascript" src="js/layout.js"></script>
-	<script type="text/javascript" src="js/data-bindings.js"></script>
-
 	<!-- PAGE LEVEL SCRIPT -->
 	<script type="text/javascript">
-		$('.inlinebar').sparkline('html', {"type":"bar","barColor":"#ffffff","height":"35px","width":"100%","zeroAxis":"false","barSpacing":"2"} );
+		$('.inlinebar').sparkline('html', { "type": "bar", "barColor": "#ffffff", "height": "35px", "width": "100%", "zeroAxis": "false", "barSpacing": "2" });
 
-		var eventName = "light";
-
-		$.getJSON(baseUrl + "/list/" + eventName, function (response) {
-
+		$.getJSON(baseUrl + "/list/moment", function (response) {
+			$("#activity-last-uldate").text(moment().format('LT'));
 			var values = [],
 				labels = [];
 			response.forEach(function (element) {
-				if (element[eventName]) {
-					labels.push(new Date(element.moment));
-					values.push(parseInt(element[eventName]));
+				var date = moment(element.moment);
+				if (date > moment().subtract(1, 'day')) {
+					var m = moment(element.moment).format('HH') + ':00';
+					var indexOf = labels.indexOf(m);
+					if (indexOf == -1) {
+						labels.push(m);
+						values.push(1);
+					}
+					else {
+						values[indexOf]++;
+					}
 				}
 			});
 
 			var data = {
 				labels: labels,
 				datasets: [{
-					label: eventName,
+					label: "Activity",
 					data: values,
 					backgroundColor: [
 						'rgba(128, 128, 255, 0.2)'
@@ -321,8 +329,7 @@
 
 			var options = {
 				scales: {
-					yAxes: [{ ticks: { beginAtZero: true }}],
-					xAxes: [{ type: 'time', time: { unit: 'minute' }}]
+					yAxes: [{ ticks: { beginAtZero: true } }]
 				}
 			};
 
@@ -333,7 +340,6 @@
 				options: options
 			});
 		});
-
 	</script>
 </body>
 
