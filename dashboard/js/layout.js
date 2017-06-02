@@ -1,18 +1,36 @@
 +(function ($) {
-    $("#header").load("/partials/header.html");
-    $("#aside").load("/partials/aside.html", function () {
-        $(function () {
-            var devicesCount = $("[data-role='devices-count']");
-            if (devicesCount.length > 0) {
-                $.getJSON("/devices/count", function (response) {
-                    devicesCount.each(function(index, element){
-                        $(element).text(response.total);
-                    });
+    Chart.defaults.global.defaultFontFamily = "'Inconsolata', monospace";
+    Chart.defaults.global.defaultFontSize = 14;
+
+    $(function () {
+        var devicesCount = $("[data-role='devices-count']");
+        if (devicesCount.length > 0) {
+            var stored = localStorage.getItem("devices");
+            if (stored) {
+                var ips = JSON.parse(stored);
+
+                devicesCount.each(function (index, element) {
+                    $(element).text(ips.length);
                 });
             }
-        });
+        }
     });
 
-    //_toastr("Bienvenido, hay "+parseInt(Math.random()*2000)+" eventos nuevos","top-right","success",false);
+    jQuery.each(["put", "delete"], function (i, method) {
+    jQuery[method] = function (url, data, callback, type) {
+        if (jQuery.isFunction(data)) {
+            type = type || callback;
+            callback = data;
+            data = undefined;
+        }
 
-})(jQuery);
+        return jQuery.ajax({
+            url: url,
+            type: method,
+            dataType: type,
+            data: data,
+            success: callback
+        });
+    };
+});
+})(jQuery, Chart);

@@ -1,0 +1,65 @@
+body {
+	padding-top: 70px;
+	font-family: 'Inconsolata', monospace;
+	background-color: #3c3c3c;
+ }
+
+.navbar-nav li i {
+	margin-right: 10px;
+}
+
+.box.danger {
+    background-color: #E66454;
+}
+.box.warning {
+    background-color: #f4b04f;
+}
+.box.success {
+    background-color: #5CB85C;
+}
+.box.default {
+    background-color: #999999;
+}
+.box {
+    color: #fff;
+    background-color: #999999;
+    margin-bottom: 20px;
+    overflow: hidden;
+    position: relative;
+    padding: 10px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.box .box-title h1 > a, .box .box-title h2 > a, .box .box-title h3 > a, .box .box-title h4 > a, .box .box-title h5 > a, .box .box-title h6 > a, .box h1, .box h2, .box h3, .box h4, .box h5, .box h6 {
+    color: #fff;
+    margin: 0;
+}
+
+.box .box-title {
+    padding: 10px 0 20px 0;
+    position: relative;
+    border-bottom: rgba(0,0,0,0.1) 1px solid;
+}
+
+.box .box-title i.fa {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 70px;
+    color: rgba(0,0,0,0.1);
+}
+.box .box-body {
+    border-top: rgba(255,255,255,0.1) 1px solid;
+	padding-top: 10px;
+}
+.box .box-body .sparkline {
+    display: block;
+    margin-top: 10px;
+}
+
+.panel-heading ul.nav-tabs.pull-right {
+    margin-right: -15px;
+    margin-top: -10px;
+}

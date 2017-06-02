@@ -1,8 +1,6 @@
 var baseUrl = "http://192.168.1.116:8081";
 
 +(function ($) {
-    
-
     $(function () {
         var target = $("[data-role='events-count']");
         if (target.length > 0) {
