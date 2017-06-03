@@ -12,8 +12,8 @@ client.on('connect', function () {
 });
 
 module.exports = {
-	add: function(numero, estado){
-
+	add: function(numero, estado, callback){
+		client.set(numero, estado, callback);
 	},
 	get: function(numero, callback){
 		client.get(numero, callback);

@@ -16,8 +16,13 @@ app.use(function (req, res, next) {
 app.post('/tarjeta', function (req, res) {
 	var numero = req.body.numero;
 	var estado = req.body.estado;
-	storage.add(numero, estado);
-	res.sendStatus(201);
+	storage.add(numero, estado, function(error, reply){
+		if(!error)
+			res.sendStatus(201);
+		else
+			res.sendStatus(500);
+	});
+	
 });
 
 app.get('/tarjeta/:numero', function (req, res) {
