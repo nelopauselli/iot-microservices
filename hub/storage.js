@@ -1,9 +1,7 @@
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
 
-var mongo_ip = process.env.MONGODB_PORT_27017_TCP_ADDR || "192.168.1.116";
-var mongo_port = process.env.MONGODB_PORT_27017_TCP_PORT || "27017";
-var url = 'mongodb://' + mongo_ip + ':' + mongo_port + '/iot';
+var url = 'mongodb://mongo:27017/iot';
 
 console.log(url);
 
