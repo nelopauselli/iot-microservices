@@ -43,6 +43,6 @@ app.get('/tarjeta/:numero', function (req, res) {
 
 app.use('/', require('./hooks'));
 
-app.listen(process.env.PORT || 8080, function () {
-	console.log('Listening on port ' + (process.env.PORT || 8080));
+app.listen(process.env.PORT || 8082, function () {
+	console.log('Listening on port ' + (process.env.PORT || 8082));
 });

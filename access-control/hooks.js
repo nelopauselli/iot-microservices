@@ -7,8 +7,8 @@ var hooks = {
 	name: 'Control de acceso',
 	mac: '12:34:56:78',
 	events: [
-		{ name: 'tarjeta_valida', subscriptions: [], content: 'mac={mac}&tarjeta_valida={numero}&propietario={propietario}' },
-		{ name: 'tarjeta_invalida', subscriptions: [], content: 'mac={mac}&tarjeta_invalida={numero}' }
+		{ name: 'tarjeta_valida', subscriptions: [], template: 'mac={mac}&tarjeta_valida={numero}&propietario={propietario}' },
+		{ name: 'tarjeta_invalida', subscriptions: [], template: 'mac={mac}&tarjeta_invalida={numero}' }
 	],
 	actions: ['validar_tarjeta']
 };
@@ -22,7 +22,7 @@ module.exports = function () {
 		console.log('registrando nueva subscripcion');
 		var eventName = req.body.event;
 		var target = req.body.target;
-		var content = req.body.content;
+		var template = req.body.template;
 
 		var event = hooks.events.find(function (event) {
 			return event.name == eventName;
@@ -30,7 +30,7 @@ module.exports = function () {
 
 		if (event) {
 			event.subscriptions.push({
-				target: target, content: content
+				target: target, template: template
 			});
 		}
 
@@ -58,7 +58,7 @@ module.exports = function () {
 				console.log('notificando ' + event.subscriptions.length + ' subscripciones...');
 
 				event.subscriptions.forEach(function (subscription) {
-					var content = subscription.content.replace("{mac}", hooks.mac)
+					var content = subscription.template.replace("{mac}", hooks.mac)
 						.replace("{numero}", numero)
 						.replace("{propietario}", reply);
 
