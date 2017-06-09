@@ -6,8 +6,10 @@ var express = require('express'),
 var hooks = {
 	name: 'Control de acceso',
 	mac: '12:34:56:78',
-	events: ['tarjeta_valida', 'tarjeta_invalida'],
-	subscriptions: [],
+	events: [
+		{ name: 'tarjeta_valida', subscriptions: [], content: 'mac={mac}&tarjeta_valida={numero}&propietario={propietario}' },
+		{ name: 'tarjeta_invalida', subscriptions: [], content: 'mac={mac}&tarjeta_invalida={numero}' }
+	],
 	actions: ['validar_tarjeta']
 };
 
@@ -18,10 +20,19 @@ module.exports = function () {
 
 	router.post('/hooks', function (req, res) {
 		console.log('registrando nueva subscripcion');
-		var event = req.body.event;
+		var eventName = req.body.event;
 		var target = req.body.target;
+		var content = req.body.content;
 
-		hooks.subscriptions.push(event + ":" + target);
+		var event = hooks.events.find(function (event) {
+			return event.name == eventName;
+		})
+
+		if (event) {
+			event.subscriptions.push({
+				target: target, content: content
+			});
+		}
 
 		res.sendStatus(201);
 	});
@@ -38,26 +49,28 @@ module.exports = function () {
 			console.log('numero: ' + numero);
 
 			storage.get(numero, function (err, reply) {
-				var event = reply == null ? 'tarjeta_invalida' : 'tarjeta_valida';
+				var eventName = reply == null ? 'tarjeta_invalida' : 'tarjeta_valida';
 
-				console.log('buscando subscripciones a "' + event + '" que notificar...');
-				var subscriptions = hooks.subscriptions.filter(function (subscription) {
-					return subscription.startsWith(event);
+				var event = hooks.events.find(function(event){
+					return event.name == eventName;
 				});
 
-				console.log('notificando ' + subscriptions.length + ' subscripciones...');
-				var content = { mac: hooks.mac };
-				content[event] = numero;
-				content["estado"] = reply;
-				
-				subscriptions.forEach(function (subscription) {
-					var target = subscription.substring(subscription.indexOf(':') + 1);
-					console.log('notificando a ' + target);
+				console.log('notificando ' + event.subscriptions.length + ' subscripciones...');
 
+				event.subscriptions.forEach(function (subscription) {
+					var content = subscription.content.replace("{mac}", hooks.mac)
+						.replace("{numero}", numero)
+						.replace("{propietario}", reply);
+
+					console.log('sending "' + content + '" to ' + subscription.target);
 					request({
-						url: target,
+						url: subscription.target,
+						headers: {
+							'Content-Type': 'application/x-www-form-urlencoded',
+							'Content-Length': content.length
+						},
 						method: 'post',
-						form: content
+						body: content
 					}, function (error, response, body) {
 						if (error)
 							console.error(error);

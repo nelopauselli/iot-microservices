@@ -21,8 +21,8 @@ app.use(function (req, res, next) {
 
 app.post('/tarjeta', function (req, res) {
 	var numero = req.body.numero;
-	var estado = req.body.estado;
-	storage.add(numero, estado, function(error, reply){
+	var propietario = req.body.propietario;
+	storage.add(numero, propietario, function(error, reply){
 		if(!error)
 			res.sendStatus(201);
 		else

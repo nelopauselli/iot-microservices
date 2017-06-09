@@ -11,8 +11,8 @@ client.on("error", function (err) {
 });
 
 module.exports = {
-	add: function(numero, estado, callback){
-		client.set(numero, estado, callback);
+	add: function(numero, propietario, callback){
+		client.set(numero, propietario, callback);
 	},
 	get: function(numero, callback){
 		client.get(numero, callback);
