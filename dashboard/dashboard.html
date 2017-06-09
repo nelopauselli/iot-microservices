@@ -291,10 +291,12 @@
 
 	<!-- PAGE LEVEL SCRIPT -->
 	<script type="text/javascript">
+		var lastTime = null;
+
 		$('.inlinebar').sparkline('html', { "type": "bar", "barColor": "#ffffff", "height": "35px", "width": "100%", "zeroAxis": "false", "barSpacing": "2" });
 
 		$.getJSON(baseUrl + "/list/moment", function (response) {
-			$("#activity-last-uldate").text(moment().format('LT'));
+			$("#activity-last-uldate").text(moment().format('LTS'));
 			var values = [],
 				labels = [];
 			response.forEach(function (element) {
@@ -309,6 +311,8 @@
 					else {
 						values[indexOf]++;
 					}
+
+					lastTime = moment(element.moment);
 				}
 			});
 
@@ -339,6 +343,28 @@
 				data: data,
 				options: options
 			});
+
+			setInterval(function () {
+				$.getJSON(baseUrl + "/list/moment", function (response) {
+					response.forEach(function (element) {
+						if (lastTime < moment(element.moment)) {
+							var m = moment(element.moment).format('HH') + ':00';
+							var indexOf = myLineChart.data.labels.indexOf(m);
+							if (indexOf == -1) {
+								myLineChart.data.labels.push(m);
+								myLineChart.data.datasets[0].data.push(1);
+							}
+							else {
+								myLineChart.data.datasets[0].data[indexOf]++;
+							}
+						}
+					});
+
+					myLineChart.update();
+					lastTime = moment();
+					$("#activity-last-uldate").text(lastTime.format('LTS'));
+				});
+			}, 2000);
 		});
 	</script>
 </body>
