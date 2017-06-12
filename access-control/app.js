@@ -1,17 +1,19 @@
 var express = require('express'),
 	bodyParser = require('body-parser'),
 	http = require('http')
-	storage = require('./storage');
+storage = require('./storage');
 
 app = express();
 app.use(bodyParser.urlencoded({
 	extended: true
 }));
 
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
+app.use(function (req, res, next) {
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	res.header("Access-control-allow-methods", "GET,POST,DELETE,OPTIONS");
+
+	next();
 });
 
 app.use(function (req, res, next) {
@@ -22,13 +24,13 @@ app.use(function (req, res, next) {
 app.post('/tarjeta', function (req, res) {
 	var numero = req.body.numero;
 	var propietario = req.body.propietario;
-	storage.add(numero, propietario, function(error, reply){
-		if(!error)
+	storage.add(numero, propietario, function (error, reply) {
+		if (!error)
 			res.sendStatus(201);
 		else
 			res.sendStatus(500);
 	});
-	
+
 });
 
 app.get('/tarjeta/:numero', function (req, res) {

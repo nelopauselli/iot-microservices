@@ -35,13 +35,41 @@ module.exports = function () {
 			res.sendStatus(201);
 		}
 		else
-			res.send(404, "event '"+eventName+"'not found");
+			res.send(404, "event '" + eventName + "'not found");
 
 
 	});
 
 	router.get('/hooks', function (req, res) {
 		res.json(hooks);
+	});
+
+	router.delete('/hooks', function (req, res) {
+		console.log('eliminando  subscripcion');
+		var eventName = req.query.event;
+		var target = req.query.target;
+
+		var event = hooks.events.find(function (event) {
+			return event.name == eventName;
+		})
+
+		if (event) {
+			var index = event.subscriptions.map(function (subscripcion) {
+				return subscripcion.target;
+			}).indexOf(target);
+
+			if (index > -1) {
+				event.subscriptions.splice(index, 1);
+				res.sendStatus(204);
+			}
+			else {
+				res.send(404, "target '" + target + "' not found");
+			}
+
+		}
+		else {
+			res.status(404).send("event '" + eventName + "' not found");
+		}
 	});
 
 	router.post('/actions', function (req, res) {
@@ -54,7 +82,7 @@ module.exports = function () {
 			storage.get(numero, function (err, reply) {
 				var eventName = reply == null ? 'tarjeta_invalida' : 'tarjeta_valida';
 
-				var event = hooks.events.find(function(event){
+				var event = hooks.events.find(function (event) {
 					return event.name == eventName;
 				});
 

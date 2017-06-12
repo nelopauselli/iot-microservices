@@ -270,7 +270,7 @@
 						return d.ip == ip;
 					})[0];
 
-					event.subscriptions.push({ target: target, template: template });
+					event.subscriptions.push({ ip: ip, eventName:eventName, target: target, template: template });
 					$("input[name='target']", form).val("")
 					$("input[name='template']", form).val("")
 
