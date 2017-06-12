@@ -78,11 +78,17 @@
 				<div class="col-md-6">
 					<div class="panel panel-default">
 						<div class="panel-heading">
+							<div class="pull-right">
+								<button class="btn btn-sm" data-bind="click: inspect">
+									<i class="fa fa-search"></i>
+								</button>
+								<button class="btn btn-sm" data-bind="click: $root.remove">
+									<i class="fa fa-trash-o"></i>
+								</button>
+							</div>
 							<i class="fa fa-cube" data-bind="css: stateAsCss"></i>
 							<strong data-bind="text: name"></strong>
-							<button class="btn btn-sm btn-default" data-bind="click: inspect">
-								<i class="fa fa-search"></i>
-							</button>
+
 						</div>
 
 						<div class="panel-body">
@@ -116,7 +122,7 @@
 									<li class="list-group-item">
 										<i class="fa fa-eye"></i>
 										<span data-bind="text: target"></span> => [<span data-bind="text: template"></span>]
-										<span class="fa fa-remove" data-bind="click: $root.unsubscribe"></span>
+										<span class="fa fa-trash-o" data-bind="click: $root.unsubscribe"></span>
 									</li>
 									<!-- /ko -->
 								</ul>
@@ -202,26 +208,29 @@
 		</div>
 	</div>
 
-<div id="definitionModal" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Definici&oacute;n</h4>
-      </div>
-      <div class="modal-body">
-        <pre id="definition"></pre>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+	<div id="definitionModal" class="modal fade" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Definici&oacute;n</h4>
+				</div>
+				<div class="modal-body">
+					<pre id="definition"></pre>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
 
 	<!-- PAGE LEVEL SCRIPT -->
 	<script type="text/javascript">
-		function inspect(element){
+		function inspect(element) {
 			var unwrap = ko.toJS(element);
 			$("#definition").text(JSON.stringify(unwrap, null, 4));
 			$('#definitionModal').modal('show')
@@ -240,19 +249,21 @@
 				return 'text-danger';
 			}, device);
 
-			source.events.forEach(function (item) {
-				var event = { ip: ip, name: item.name, subscriptions: ko.observableArray() };
-				device.events.push(event);
+			if (source.events)
+				source.events.forEach(function (item) {
+					var event = { ip: ip, name: item.name, subscriptions: ko.observableArray() };
+					device.events.push(event);
 
-				item.subscriptions.forEach(function (subscription) {
-					event.subscriptions.push({ ip: ip, eventName: event.name, target: subscription.target, template: subscription.template });
+					item.subscriptions.forEach(function (subscription) {
+						event.subscriptions.push({ ip: ip, eventName: event.name, target: subscription.target, template: subscription.template });
+					});
 				});
-			});
 
-			source.actions.forEach(function (item) {
-				var action = { name: item };
-				device.actions.push(action);
-			});
+			if (source.actions)
+				source.actions.forEach(function (item) {
+					var action = { name: item };
+					device.actions.push(action);
+				});
 			return device;
 		}
 
@@ -300,7 +311,7 @@
 						return d.ip == ip;
 					})[0];
 
-					event.subscriptions.push({ ip: ip, eventName:eventName, target: target, template: template });
+					event.subscriptions.push({ ip: ip, eventName: eventName, target: target, template: template });
 					$("input[name='target']", form).val("")
 					$("input[name='template']", form).val("")
 
@@ -330,6 +341,19 @@
 					});
 					localStorage.setItem("devices", JSON.stringify(ips));
 				});
+			},
+			remove: function (device) {
+				var stored = localStorage.getItem("devices");
+				if (stored) {
+					var ips = JSON.parse(stored);
+					if (ips) {
+						var index = ips.indexOf(device.ip);
+						if (index > -1) {
+							ips.splice(index, 1);
+							localStorage.setItem("devices", JSON.stringify(ips));
+						}
+					}
+				}
 			}
 		};
 
@@ -339,9 +363,19 @@
 			if (ips) {
 				ips.forEach(function (ip) {
 					var url = "http://" + ip + "/hooks";
-					$.getJSON(url, function (response) {
-						var device = new Device(ip, response);
-						model.devices.push(device);
+
+					$.ajax({
+						url: url,
+						dataType: 'json',
+						success: function (response) {
+							var device = new Device(ip, response);
+							model.devices.push(device);
+						},
+						error: function () {
+							var device = new Device(ip, {});
+							model.devices.push(device);
+						},
+						timeout: 1000 //1 second timeout
 					});
 				});
 			}
