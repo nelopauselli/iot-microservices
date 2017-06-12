@@ -260,7 +260,10 @@
 				var target = $("input[name='target']", form).val();
 				var template = $("input[name='template']", form).val();
 
-				var data = "event=" + eventName + "&target=" + target + "&template=" + template;
+				var data = "event=" + encodeURIComponent(eventName) +
+					"&target=" + encodeURIComponent(target) +
+					"&template=" + encodeURIComponent(template);
+
 				var url = "http://" + ip + "/hooks";
 				$.post(url, data, function () {
 					var device = model.devices().filter(function (d) {
