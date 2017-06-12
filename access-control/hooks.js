@@ -32,9 +32,12 @@ module.exports = function () {
 			event.subscriptions.push({
 				target: target, template: template
 			});
+			res.sendStatus(201);
 		}
+		else
+			res.send(404, "event '"+eventName+"'not found");
 
-		res.sendStatus(201);
+
 	});
 
 	router.get('/hooks', function (req, res) {

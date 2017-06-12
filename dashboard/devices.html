@@ -60,6 +60,7 @@
 				<ul class="nav navbar-nav">
 					<li><a href="/dashboard.html"><i class="fa fa-dashboard"></i>Dashboard</a></li>
 					<li class="active"><a href="devices.html"><i class="main-icon fa fa-leaf"></i>Devices</a></li>
+					<li><a href="map.html"><i class="main-icon fa fa-map"></i>Map</a></li>
 				</ul>
 			</div>
 		</div>
@@ -185,7 +186,7 @@
 									<input type="text" name="template" class="form-control" placeholder="template of body">
 								</div>
 								<div class="form-group">
-								<button class="btn btn-default" type="submit">
+									<button class="btn btn-default" type="submit">
 									<i class="fa fa-eye"></i> Subscribe
 								</button>
 								</div>
@@ -245,23 +246,23 @@
 
 		var model = {
 			devices: ko.observableArray(),
-			currentEvent: ko.observable({ip: '', name: ''}),
-			modalSubscribe:function(event){
+			currentEvent: ko.observable({ ip: '', name: '' }),
+			modalSubscribe: function (event) {
 				model.currentEvent(event);
 				$("#subscribe").modal('show');
 			},
 			subscribe: function (form) {
 				var event = model.currentEvent();
 				var $form = $(form);
-				
+
 				var ip = event.ip;
 				var eventName = event.name;
 				var target = $("input[name='target']", form).val();
 				var template = $("input[name='template']", form).val();
 
 				var data = "event=" + eventName + "&target=" + target + "&template=" + template;
-				var url = "http://" + ip + "/hooks" + "?" + data;
-				$.post(url, "", function () {
+				var url = "http://" + ip + "/hooks";
+				$.post(url, data, function () {
 					var device = model.devices().filter(function (d) {
 						return d.ip == ip;
 					})[0];
