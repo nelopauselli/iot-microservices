@@ -231,7 +231,7 @@
 	<!-- PAGE LEVEL SCRIPT -->
 	<script type="text/javascript">
 		function inspect(element) {
-			var unwrap = ko.toJS(element);
+			var unwrap = ko.toJS(element.source);
 			$("#definition").text(JSON.stringify(unwrap, null, 4));
 			$('#definitionModal').modal('show')
 		}
@@ -239,7 +239,8 @@
 		function Device(ip, source) {
 			var device = {
 				ip: ip, name: source.name, mac: source.mac, state: ko.observable('unknown'),
-				events: ko.observableArray(), actions: ko.observableArray()
+				events: ko.observableArray(), actions: ko.observableArray(),
+				source: source
 			};
 			device.stateAsCss = ko.computed(function () {
 				if (this.state() == 'unknown')

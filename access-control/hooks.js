@@ -10,7 +10,7 @@ var hooks = {
 		{ name: 'tarjeta_valida', subscriptions: [], template: 'mac={mac}&tarjeta_valida={numero}&propietario={propietario}' },
 		{ name: 'tarjeta_invalida', subscriptions: [], template: 'mac={mac}&tarjeta_invalida={numero}' }
 	],
-	actions: ['validar_tarjeta']
+	actions: [{name: 'validar_tarjeta', parameters: ["numero"]}]
 };
 
 module.exports = function () {
