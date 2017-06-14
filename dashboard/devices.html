@@ -238,7 +238,7 @@
 
 		function Device(ip, source) {
 			var device = {
-				ip: ip, name: source.name, mac: source.mac, state: ko.observable('unknown'),
+				ip: ip, name: source.name, mac: source.mac, state: ko.observable('ready'),
 				events: ko.observableArray(), actions: ko.observableArray(),
 				source: source
 			};
@@ -281,7 +281,7 @@
 					error: function () {
 						device.state('notfound');
 					},
-					timeout: 500
+					timeout: 1000
 				});
 			});
 		}
@@ -376,13 +376,13 @@
 							var device = new Device(ip, {});
 							model.devices.push(device);
 						},
-						timeout: 1000 //1 second timeout
+						timeout: 10000 //1 second timeout
 					});
 				});
 			}
 		}
 
-		setInterval(checkDeviceState, 5000);
+		setInterval(checkDeviceState, 60000);
 		ko.applyBindings(model, document.getElementById("workspace"));
 	</script>
 </body>
