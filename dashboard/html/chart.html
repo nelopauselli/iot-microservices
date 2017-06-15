@@ -40,7 +40,7 @@
 		$(function () {
 			var eventName = getUrlParameter("event");
 
-			$.getJSON(baseUrl + "/list/" + eventName, function (response) {
+			$.getJSON("/api/list/" + eventName, function (response) {
 
 				var values = [],
 					labels = [];

@@ -296,7 +296,7 @@
 
 		$('.inlinebar').sparkline('html', { "type": "bar", "barColor": "#ffffff", "height": "35px", "width": "100%", "zeroAxis": "false", "barSpacing": "2" });
 
-		$.getJSON(baseUrl + "/list/moment", function (response) {
+		$.getJSON("/api/list/moment", function (response) {
 			$("#activity-last-uldate").text(moment().format('LTS'));
 			var values = [],
 				labels = [];
@@ -346,7 +346,7 @@
 			});
 
 			setInterval(function () {
-				$.getJSON(baseUrl + "/list/moment", function (response) {
+				$.getJSON("/api/list/moment", function (response) {
 					response.forEach(function (element) {
 						if (lastTime < moment(element.moment)) {
 							var m = moment(element.moment).format('HH') + ':00';

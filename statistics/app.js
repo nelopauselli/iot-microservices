@@ -18,7 +18,7 @@ app.get('/', function (req, res) {
 	res.send("Hello, What do you want know?");
 });
 
-app.get('/list/:event', function (req, res) {
+app.get('/api/list/:event', function (req, res) {
 	storage.listEvents(req.params.event, function (err, events) {
 		if (!err)
 			res.json(events);
@@ -27,7 +27,7 @@ app.get('/list/:event', function (req, res) {
 	});
 });
 
-app.get('/count/:event', function (req, res) {
+app.get('/api/count/:event', function (req, res) {
 	console.log(req.params.event);
 	storage.countEvents(req.params.event, function (err, events) {
 		res.json(events);
