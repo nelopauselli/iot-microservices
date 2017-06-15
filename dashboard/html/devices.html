@@ -82,6 +82,9 @@
 								<button class="btn btn-sm" data-bind="click: inspect">
 									<i class="fa fa-search"></i>
 								</button>
+								<button class="btn btn-sm" data-bind="click: history">
+									<i class="fa fa-history"></i>
+								</button>
 								<button class="btn btn-sm" data-bind="click: $root.remove">
 									<i class="fa fa-trash-o"></i>
 								</button>
@@ -222,11 +225,25 @@
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 				</div>
 			</div>
-			<!-- /.modal-content -->
 		</div>
-		<!-- /.modal-dialog -->
 	</div>
-	<!-- /.modal -->
+
+	<div id="historyModal" class="modal fade" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Historial</h4>
+				</div>
+				<div class="modal-body">
+					<pre id="history"></pre>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<!-- PAGE LEVEL SCRIPT -->
 	<script type="text/javascript">
@@ -234,6 +251,20 @@
 			var unwrap = ko.toJS(element.source);
 			$("#definition").text(JSON.stringify(unwrap, null, 4));
 			$('#definitionModal').modal('show')
+		}
+
+		function history(element) {
+			var url = "http://" + element.ip + "/history";
+			$("#history").text("Loading...");
+			$.getJSON(url, function (response) {
+				$("#history").text(JSON.stringify(response, null, 4));
+			}).fail(function (jqXHR, textStatus, errorThrown) {
+				if (jqXHR.status == 404)
+					$("#history").text("Device doesn't implement history");
+				else
+					$("#history").text("Fail :(. " + errorThrown);
+			});
+			$('#historyModal').modal('show')
 		}
 
 		function Device(ip, source) {
