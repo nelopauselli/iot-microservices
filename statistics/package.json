@@ -1,0 +1,17 @@
+{
+  "name": "statistics",
+  "version": "1.0.0",
+  "description": "queries and statistics about events",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "nelopauselli@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "assert": "^1.4.1",
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "mongodb": "^2.2.27"
+  }
+}

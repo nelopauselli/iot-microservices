@@ -15,20 +15,22 @@ app.use(function(req, res, next) {
 });
 
 app.get('/', function (req, res) {
-	res.send("Hello, I'm an IoT hub");
+	res.send("Hello, What do you want know?");
 });
 
-app.post('/', function (req, res) {
-	var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-	var message = req.body;
-
-	console.log("Incomming message from " + ip + " to hub. Body: " + JSON.stringify(message));
-
-	storage.insert(message, function (err) {
+app.get('/list/:event', function (req, res) {
+	storage.listEvents(req.params.event, function (err, events) {
 		if (!err)
-			res.sendStatus(200);
+			res.json(events);
 		else
 			res.sendStatus(500);
+	});
+});
+
+app.get('/count/:event', function (req, res) {
+	console.log(req.params.event);
+	storage.countEvents(req.params.event, function (err, events) {
+		res.json(events);
 	});
 });
 
@@ -43,5 +45,5 @@ app.use(function (err, req, res, next) {
 
 var port = process.env.PORT || 3000;
 app.listen(port, function () {
-	console.log('Example app listening on port ' + port + '!');
+	console.log('App listening on port ' + port + '!');
 });
